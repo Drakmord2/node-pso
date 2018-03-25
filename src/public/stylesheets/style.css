@@ -1,0 +1,51 @@
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    padding: 5%;
+}
+
+#canvas-container {
+    width: 100%;
+    text-align: center;
+}
+
+canvas {
+    border: 1px dashed #f00000;
+    display: inline;
+}
+
+h2 {
+    text-align: center;
+    padding-bottom: 2%;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.btn-group {
+    text-align: center;
+}
+
+.btn-primary {
+    border-radius: 0;
+    width: 35px;
+    height: 35px;
+}
+
+#m11 {
+    border-top-left-radius: 5px;
+}
+
+#m18 {
+    border-top-right-radius: 5px;
+}
+
+#m81 {
+    border-bottom-left-radius: 5px;
+}
+
+#m88 {
+    border-bottom-right-radius: 5px;
+}
