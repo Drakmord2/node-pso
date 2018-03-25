@@ -11,6 +11,7 @@ const config = require('./config');
 
 // Routers
 const index = require('./routes/index');
+const pso   = require('./routes/psoRouter');
 
 // Application
 const app = express();
@@ -24,6 +25,7 @@ app.use( express.static( path.join(__dirname, 'public')));
 
 // Mount Routes
 app.use('/', index);
+app.use('/pso', pso);
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -39,7 +41,7 @@ app.use(function(err, req, res, next) {
     res.locals.error      = req.app.get('env') === 'development' ? err : {};
 
     res.status(err.status || 500);
-    res.send('error: '+err);
+    res.send('An error ocurred: '+err);
 });
 
 // Export module
