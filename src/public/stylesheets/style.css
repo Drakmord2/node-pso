@@ -11,7 +11,7 @@ body {
 }
 
 canvas {
-    border: 1px dashed;
+    border: 1px solid;
     display: inline;
 }
 

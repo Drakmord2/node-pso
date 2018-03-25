@@ -3,8 +3,8 @@ const xhr = new XMLHttpRequest();
 
 const c             = document.getElementById("myCanvas");
 const ctx           = c.getContext("2d");
-let generation      = 0;
-let max_generation  = 10;
+let iteration      = 0;
+let max_iteration  = 10;
 let positions       = [];
 let frameID         = 0;
 
@@ -20,11 +20,12 @@ function draw(particles) {
     ctx.drawImage(func, 0, 0);
 
     particles.forEach((pos, index, particles) => {
-        drawParticle(pos[0], pos[1]);
+        drawParticle(index+1, pos[0][0], pos[0][1]);
+        drawStats(pos[1]);
     });
 }
 
-function drawParticle(x, y) {
+function drawParticle(id, x, y) {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x+10, y);
@@ -38,6 +39,24 @@ function drawParticle(x, y) {
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#0100ff";
     ctx.stroke();
+
+    ctx.beginPath();
+    ctx.font="14px Roboto";
+    ctx.strokeStyle = "#16ff00";
+    ctx.strokeText(id, x, y-4);
+}
+
+function drawStats(gbest) {
+    ctx.beginPath();
+    ctx.clearRect(0, 402, 403, 442);
+
+    gbest = gbest.toFixed(2);
+
+    ctx.lineWidth = 3;
+    ctx.font="18px Roboto";
+    ctx.strokeStyle = "#000";
+    ctx.fillText("Iteration: " + (iteration + 1), 20, 430);
+    ctx.fillText("gbest: " + gbest, 260, 430);
 }
 
 function clear() {
@@ -46,18 +65,18 @@ function clear() {
 }
 
 function newGeneration() {
-    if (generation >= max_generation) {
+    if (iteration >= max_iteration) {
         cancelAnimationFrame(frameID);
         return;
     }
 
-    if (frameID % 59 === 0) {
+    if (frameID % 50 === 0) {
         clear();
     }
 
-    if (frameID % 60 === 0) {
-        draw(positions[generation]);
-        generation++;
+    if (frameID % 25 === 0) {
+        draw(positions[iteration]);
+        iteration++;
     }
 
     frameID = requestAnimationFrame(newGeneration);
@@ -69,8 +88,8 @@ xhr.onreadystatechange = function() {
 
         data = JSON.parse(data);
 
-        max_generation  = data.generations;
-        positions       = data.positions;
+        max_iteration  = data.iterations;
+        positions      = data.positions;
 
         frameID = requestAnimationFrame(newGeneration);
     }
