@@ -5,18 +5,18 @@ const bodyParser    = require('body-parser');
 const psoCtrl       = require('../controller/psoController');
 
 // Router
-const matrixRouter = express.Router();
-matrixRouter.use(bodyParser.json());
+const psoRouter = express.Router();
+psoRouter.use(bodyParser.json());
 
 // Routes
-matrixRouter.route('/')
+psoRouter.route('/')
     .all((req, res, next) => {
         cors(res);
 
         next();
     })
 
-    .get(psoCtrl.optimize)
+    .post(psoCtrl.optimize)
 
     .options((req, res, next) => {
         res.end();
@@ -30,4 +30,4 @@ function cors(res) {
     res.setHeader('Access-Control-Allow-Headers', '*');
 }
 
-module.exports = matrixRouter;
+module.exports = psoRouter;

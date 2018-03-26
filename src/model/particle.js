@@ -1,14 +1,14 @@
 
 const config = require('../config');
 
-let heuristic = config.pso.heuristic;
 let gbest = {
-    solution: 99999999999999,
-    position: []
+    solution: NaN,
+    position: [NaN, NaN]
 };
 
 class Particle {
-    constructor(position, velocity) {
+    constructor(position, velocity, heuristic) {
+        this.heuristic  = heuristic;
         this.position   = position;
         this.velocity   = velocity;
         this.pbest      = {
@@ -18,30 +18,30 @@ class Particle {
     }
 
     evaluate() {
-        let result = heuristic(this.position);
+        let result = this.heuristic(this.position);
 
         if (result < this.pbest.solution) {
             this.pbest.solution = result;
             this.pbest.position = this.position;
         }
 
-        if (this.pbest.solution < gbest.solution) {
+        if (isNaN(gbest.solution) || this.pbest.solution < gbest.solution) {
             gbest = this.pbest;
         }
 
         this.getNextPosition();
 
-        return gbest.solution;
+        return gbest;
     }
 
     getNextPosition() {
         // v(t+1) = w.v(t) + c1.r1.(pbest - x(t)) + c2.r2.(gbest - x(t))
         // x(t+1) = x(t) + v(t+1)
 
-        let nextPosition = [];
-        let inertia = config.pso.inertia;
-        let accelp = config.pso.accelP;
-        let accelg = config.pso.accelG;
+        let nextPosition    = [];
+        let inertia         = config.pso.inertia;
+        let accelp          = config.pso.accelP;
+        let accelg          = config.pso.accelG;
 
         for (let i = 0; i < config.dimensions; i++) {
             let rp = Math.random();
