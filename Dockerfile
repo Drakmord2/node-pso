@@ -11,6 +11,9 @@ WORKDIR ${APP_ROOT}
 # Install Express Generator
 RUN npm install -g express-generator
 
+# Install MathJS
+RUN npm install -g mathjs
+
 # Install dependencies
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
