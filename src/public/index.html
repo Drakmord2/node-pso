@@ -13,20 +13,24 @@
 <body>
     <h2>Node PSO</h2>
 
-    <img hidden id="sphere" width="403" height="402" src="./images/spherefunction.png">
-    <img hidden id="himmelblau" width="420" height="364" src="./images/himmelblau.png">
-    <img hidden id="rastrigin" width="420" height="419" src="./images/rastrigin.png">
+    <img hidden id="sphere" width="420" height="420" src="./images/spherefunction.png">
+    <img hidden id="rosenbrock" width="420" height="420" src="./images/rosenbrock.png">
+    <img hidden id="rastrigin" width="420" height="420" src="./images/rastrigin.png">
 
     <div id="canvas-container">
-        <canvas id="myCanvas" width="420" height="460">No Canvas support</canvas>
+        <canvas id="myCanvas" width="420" height="420">No Canvas support</canvas>
 
         <div class="wrapper">
             <button id="btn1" class="btn btn-success btn-lg" onclick="restart()">Restart</button>
             <button id="btn2" class="btn btn-success btn-lg" onclick="clearCanvas()">Clear</button>
         </div>
     </div>
-
     <br>
+
+    <div class="well well-sm">
+        <p id="result"></p>
+    </div>
+
     <div class="well well-sm">
         <div class="wrapper">
             <footer><a href="https://github.com/Drakmord2/node-pso">https://github.com/Drakmord2/node-pso</a></footer>

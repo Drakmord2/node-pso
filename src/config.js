@@ -1,36 +1,54 @@
 
 const configs = {
-    dimensions: 2,
+    dimensions: 3,
     fixed_placement: false,
     pso: {
         accelP: 1.07,
         accelG: 2.12,
         inertia: 0.021,
         heuristics: {
-            sphere: (position) => {
-                let posx = position[0] - 210;
-                let posy = position[1] - 210;
+            sphere: (position, dimensions) => {
+                let pos = [];
+                for(let n = 0; n < dimensions; n++){
+                    pos.push(position[n] - 210);
+                }
 
-                // x^2 + y^2
-                let result = Math.pow(posx, 2) + Math.pow(posy, 2);
+                // ∑ x^2
+                let result = Math.pow(pos[0], 2);
 
-                return result
-            },
-            himmelblau: (position) => {
-                let posx = position[0] - 210;
-                let posy = position[1] - 210;
-
-                // (x^2 + y - 11)^2 + (x + y^2 - 7)^2
-                let result = Math.pow( Math.pow(posx, 2) + posy - 11, 2) + Math.pow( posx + Math.pow(posy, 2) - 7, 2);
+                for(let n = 1; n < dimensions; n++){
+                    result += Math.pow(pos[n], 2);
+                }
 
                 return result
             },
-            rastrigin: (position) => {
-                let posx = position[0] - 210;
-                let posy = position[1] - 210;
+            rosenbrock: (position, dimensions) => {
+                let pos = [];
+                for(let n = 0; n < dimensions; n++){
+                    pos.push(position[n] - 210);
+                }
 
-                // 10 * 2 + x^2 + y^2 - 10 * cos(2 * pi * x) - 10 * cos(2 * pi * y)
-                let result = 2 * 10 + Math.pow(posx, 2) + Math.pow(posy, 2) - 10 * Math.cos(2 * Math.PI * posx) - 10 * Math.cos(2 * Math.PI * posy);
+                // ∑ [ 100 * (y - x^2)^2 + (1 - x)^2 ]
+                let result = 100 * Math.pow((pos[1] - Math.pow(pos[0], 2)), 2) + Math.pow((1 - pos[0]), 2);
+
+                for(let n = 1; n < dimensions-1; n++){
+                    result += 100 * Math.pow((pos[n+1] - Math.pow(pos[n], 2)), 2) + Math.pow((1 - pos[n]), 2);
+                }
+
+                return result
+            },
+            rastrigin: (position, dimensions) => {
+                let pos = [];
+                for(let n = 0; n < dimensions; n++){
+                    pos.push(position[n] - 210);
+                }
+
+                // 10 * n + ∑ [ x^2 - 10 * cos(2 * pi * x) ]
+                let result = 10 * dimensions;
+
+                for(let n = 0; n < dimensions; n++){
+                    result += Math.pow(pos[n], 2) - 10 * Math.cos(2 * Math.PI * pos[n]);
+                }
 
                 return result
             }

@@ -6,9 +6,9 @@ function optimize(req, res, next) {
     const func_name     = req.body.func_name;
     const num_particles = req.body.num_particles;
     const iterations    = req.body.max_iteration;
-    const particles     = generate_particles(num_particles, func_name);
+    let particles       = generate_particles(num_particles, func_name);
 
-    let positions       = [];
+    let positions = [];
     let gbest = {
         solution: NaN,
         position: [NaN, NaN]
@@ -60,10 +60,6 @@ function generate_particles(amount, func_name) {
 
         amount--;
     }
-    
-    if (config.fixed_placement) {
-        positions = fixed_particles();
-    }
 
     const heuristic = config.pso.heuristics[func_name];
 
@@ -76,21 +72,17 @@ function generate_particles(amount, func_name) {
     return particles
 }
 
-function fixed_particles() {
-    positions = [
-        [10, 10],  [137, 10],  [264, 10],  [390, 10],
-        [10, 195], [137, 195], [264, 195], [390, 195],
-        [10, 390], [137, 390], [264, 390], [390, 390],
-    ];
-
-    return positions;
-}
-
 function get_vector() {
     let x = Math.round(Math.random() * 1000) % config.canvas.width - 10;
     let y = Math.round(Math.random() * 1000) % config.canvas.height - 10;
 
+    const dimensions = config.dimensions;
     let vector = [x, y];
+    for(let n = 2; n < dimensions; n++){
+        let k = Math.round(Math.random() * 1000);
+
+        vector.push(k);
+    }
 
     return vector;
 }

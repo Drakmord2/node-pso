@@ -1,5 +1,6 @@
 
-const config = require('../config');
+const config        = require('../config');
+const dimensions    = config.dimensions;
 
 let gbest = {
     solution: NaN,
@@ -12,13 +13,13 @@ class Particle {
         this.position   = position;
         this.velocity   = velocity;
         this.pbest      = {
-            solution: heuristic(position),
+            solution: heuristic(position, dimensions),
             position: position
         };
     }
 
     evaluate() {
-        let result = this.heuristic(this.position);
+        let result = this.heuristic(this.position, dimensions);
 
         if (result < this.pbest.solution) {
             this.pbest.solution = result;

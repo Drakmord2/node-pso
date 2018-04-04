@@ -32,7 +32,6 @@ function clearCanvas() {
     ctx.clearRect(0, 0, 420, 460);
 
     drawContour();
-    drawStats({solution:NaN, position:[NaN, NaN]});
 }
 
 function clear() {
@@ -45,12 +44,12 @@ function draw(particles) {
 
     particles.forEach((pos, index, particles) => {
         drawParticle(index+1, pos[0][0], pos[0][1]);
-        drawStats(pos[1]);
     });
 }
 
 function drawContour() {
     let func = document.getElementById(func_name);
+
     ctx.drawImage(func, 0, 0);
 }
 
@@ -75,22 +74,6 @@ function drawParticle(id, x, y) {
     ctx.strokeText(id, x, y-4);
 }
 
-function drawStats(gbest) {
-    ctx.beginPath();
-    ctx.clearRect(0, 420, 420, 460);
-
-    gbest.solution      = gbest.solution === null ? NaN : gbest.solution.toFixed(2);
-    gbest.position[0]   = gbest.position[0] === null ? NaN : (gbest.position[0]-210).toFixed(2);
-    gbest.position[1]   = gbest.position[1] === null ? NaN : (gbest.position[1]-210).toFixed(2);
-
-    ctx.lineWidth   = 3;
-    ctx.font        = "18px Roboto";
-    ctx.strokeStyle = "#000";
-
-    ctx.fillText("Iteration: " + (iteration + 1), 20, 445);
-    ctx.fillText("gbest: " + gbest.solution + " ["+ gbest.position + "]", 200, 445);
-}
-
 function newGeneration() {
     if (iteration >= max_iteration) {
         cancelAnimationFrame(frameID);
@@ -99,6 +82,13 @@ function newGeneration() {
 
     if (frameID % 20 === 0) {
         clear();
+    }
+
+    if (iteration <= max_iteration) {
+        let resultBox   = document.getElementById('result');
+        let gbest       = positions[iteration][num_particles-1][1];
+
+        resultBox.innerHTML = `Iteration: ${iteration+1}<br>Global Best: ${gbest.solution}`;
     }
 
     if (frameID % 10 === 0) {
@@ -123,13 +113,13 @@ function sendRequest(json, path) {
 }
 
 function init() {
-    iteration       = 0;
     positions       = [];
+    iteration       = 0;
     frameID         = 0;
 
     func_name       = 'rastrigin';
-    max_iteration   = 150;
-    num_particles   = 25;
+    max_iteration   = 100;
+    num_particles   = 30;
 }
 
 function start() {
