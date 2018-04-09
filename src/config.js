@@ -1,16 +1,20 @@
 
 const configs = {
-    dimensions: 3,
-    fixed_placement: false,
+    dimensions: 2,
     pso: {
-        accelP: 1.07,
-        accelG: 2.12,
-        inertia: 0.021,
+        accelP: 2.05,
+        accelG: 2.05,
+        inertia: 0.02,
+        boundaries: {
+            sphere: [-100, 100],
+            rosenbrock: [-30, 30],
+            rastrigin: [-5.12, 5.12]
+        },
         heuristics: {
             sphere: (position, dimensions) => {
                 let pos = [];
                 for(let n = 0; n < dimensions; n++){
-                    pos.push(position[n] - 210);
+                    pos.push(position[n]);
                 }
 
                 // ∑ x^2
@@ -25,7 +29,7 @@ const configs = {
             rosenbrock: (position, dimensions) => {
                 let pos = [];
                 for(let n = 0; n < dimensions; n++){
-                    pos.push(position[n] - 210);
+                    pos.push(position[n]);
                 }
 
                 // ∑ [ 100 * (y - x^2)^2 + (1 - x)^2 ]
@@ -40,7 +44,7 @@ const configs = {
             rastrigin: (position, dimensions) => {
                 let pos = [];
                 for(let n = 0; n < dimensions; n++){
-                    pos.push(position[n] - 210);
+                    pos.push(position[n]);
                 }
 
                 // 10 * n + ∑ [ x^2 - 10 * cos(2 * pi * x) ]
@@ -53,10 +57,6 @@ const configs = {
                 return result
             }
         }
-    },
-    canvas: {
-        width: 420,
-        height: 420
     }
 };
 

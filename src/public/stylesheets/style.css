@@ -7,9 +7,17 @@ body {
     padding-bottom: 5%;
 }
 
+#main-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 #canvas-container {
-    width: 100%;
-    text-align: center;
+    text-align: left;
+}
+
+#config-container {
+    width: 70%;
 }
 
 canvas {

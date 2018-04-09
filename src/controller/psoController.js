@@ -6,7 +6,9 @@ function optimize(req, res, next) {
     const func_name     = req.body.func_name;
     const num_particles = req.body.num_particles;
     const iterations    = req.body.max_iteration;
-    let particles       = generate_particles(num_particles, func_name);
+
+    particle.clear();
+    let particles = generate_particles(num_particles, func_name);
 
     let positions = [];
     let gbest = {
@@ -30,27 +32,26 @@ function optimize(req, res, next) {
 
     const data = {
         iterations: iterations,
-        positions: positions
+        positions:  positions,
+        boundary:   config.pso.boundaries[func_name]
     };
 
     res.json(data);
 }
 
 function generate_particles(amount, func_name) {
-    let particles = [];
-    let positions = [];
-    let velocities = [];
+    let particles   = [];
+    let positions   = [];
+    let velocities  = [];
+    const boundary  = config.pso.boundaries[func_name];
 
     while (amount > 0) {
-
-        let pos = get_vector();
+        let pos = get_vector(boundary);
         if (positions.indexOf(pos) !== -1) {
             continue;
         }
 
-        let vel = get_vector();
-        vel     = invert(vel);
-
+        let vel = get_vector(boundary);
         if (velocities.indexOf(vel) !== -1) {
             continue;
         }
@@ -64,7 +65,7 @@ function generate_particles(amount, func_name) {
     const heuristic = config.pso.heuristics[func_name];
 
     positions.forEach((pos, index, positions) => {
-        let p = new particle(pos, velocities[index], heuristic);
+        let p = new particle(pos, velocities[index], heuristic, boundary);
 
         particles.push(p);
     });
@@ -72,30 +73,18 @@ function generate_particles(amount, func_name) {
     return particles
 }
 
-function get_vector() {
-    let x = Math.round(Math.random() * 1000) % config.canvas.width - 10;
-    let y = Math.round(Math.random() * 1000) % config.canvas.height - 10;
-
-    const dimensions = config.dimensions;
-    let vector = [x, y];
-    for(let n = 2; n < dimensions; n++){
-        let k = Math.round(Math.random() * 1000);
-
-        vector.push(k);
-    }
-
-    return vector;
+function randomBetween(min, max) {
+    return Math.floor(Math.random() * (max-min+1)) + min;
 }
 
-function invert(vector) {
-    let chance = Math.random();
+function get_vector(boundary) {
+    const dimensions    = config.dimensions;
+    let vector          = [];
 
-    if (chance % 7 === 0) {
-        vector[0] = - vector[0];
-    }
+    for(let n = 0; n < dimensions; n++){
+        let k = randomBetween(boundary[0], boundary[1]);
 
-    if (chance % 3 === 0) {
-        vector[1] = - vector[1];
+        vector.push(k);
     }
 
     return vector;

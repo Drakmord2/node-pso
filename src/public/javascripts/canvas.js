@@ -4,6 +4,7 @@ const xhr = new XMLHttpRequest();
 let func_name;
 let iteration;
 let max_iteration;
+let boundary;
 let positions;
 let frameID;
 let num_particles;
@@ -19,6 +20,7 @@ xhr.onreadystatechange = function() {
 
         max_iteration  = data.iterations;
         positions      = data.positions;
+        boundary       = data.boundary;
 
         frameID = requestAnimationFrame(newGeneration);
     }
@@ -43,8 +45,27 @@ function draw(particles) {
     drawContour();
 
     particles.forEach((pos, index, particles) => {
+        pos = mapPosition(pos);
         drawParticle(index+1, pos[0][0], pos[0][1]);
     });
+}
+
+function mapPosition(pos) {
+    let min = boundary[0];
+    let max = boundary[1];
+
+    // slope = (output_end - output_start) / (input_end - input_start);
+    // output = output_start + slope * (input - input_start);
+
+    let slope = 420 / (max - min);
+
+    let x = slope * (pos[0][0] - min);
+    let y = slope * (pos[0][1] - min);
+
+    pos[0][0] = x;
+    pos[0][1] = y;
+
+    return pos;
 }
 
 function drawContour() {
@@ -105,6 +126,16 @@ function restart() {
     start();
 }
 
+function getFunctionName() {
+    let radios = document.getElementsByName('function');
+
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            return radios[i].value;
+        }
+    }
+}
+
 function sendRequest(json, path) {
     xhr.open('POST', `http://localhost:8181${path}`, true);
 
@@ -117,9 +148,9 @@ function init() {
     iteration       = 0;
     frameID         = 0;
 
-    func_name       = 'rastrigin';
-    max_iteration   = 100;
-    num_particles   = 30;
+    func_name       = getFunctionName();
+    max_iteration   = document.getElementById('iterations').value;
+    num_particles   = document.getElementById('particles').value;
 }
 
 function start() {

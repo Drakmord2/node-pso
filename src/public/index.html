@@ -17,19 +17,37 @@
     <img hidden id="rosenbrock" width="420" height="420" src="./images/rosenbrock.png">
     <img hidden id="rastrigin" width="420" height="420" src="./images/rastrigin.png">
 
-    <div id="canvas-container">
-        <canvas id="myCanvas" width="420" height="420">No Canvas support</canvas>
+    <div id="main-container">
+        <div id="config-container">
+            <div id="configs" class="well well-sm">
+                <label>Particles</label><br>
+                <input id="particles" type="text" value="30"><br><br>
 
-        <div class="wrapper">
-            <button id="btn1" class="btn btn-success btn-lg" onclick="restart()">Restart</button>
-            <button id="btn2" class="btn btn-success btn-lg" onclick="clearCanvas()">Clear</button>
+                <label>Iterations</label><br>
+                <input id="iterations" type="text" value="100"><br>
+
+                <form name="funcForm">
+                    <br>Functions<br>
+                    <input type="radio" name="function" value="rastrigin" checked> Rastrigin<br>
+                    <input type="radio" name="function" value="sphere"> Sphere<br>
+                    <input type="radio" name="function" value="rosenbrock"> Rosenbrock<br>
+                </form><br>
+
+                <div id="controls" class="wrapper">
+                    <button id="btn1" class="btn btn-success btn-m" onclick="restart()">Start</button>
+                    <button id="btn2" class="btn btn-success btn-m" onclick="clearCanvas()">Clear</button>
+                </div>
+            </div>
+
+            <div id="result-div" class="well well-sm">
+                <p id="result"></p>
+            </div>
         </div>
-    </div>
-    <br>
 
-    <div class="well well-sm">
-        <p id="result"></p>
-    </div>
+        <div id="canvas-container">
+            <canvas id="myCanvas" width="420" height="420">No Canvas support</canvas>
+        </div>
+    </div><br>
 
     <div class="well well-sm">
         <div class="wrapper">

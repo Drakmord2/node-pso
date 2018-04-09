@@ -8,8 +8,9 @@ let gbest = {
 };
 
 class Particle {
-    constructor(position, velocity, heuristic) {
+    constructor(position, velocity, heuristic, boundary) {
         this.heuristic  = heuristic;
+        this.boundary   = boundary;
         this.position   = position;
         this.velocity   = velocity;
         this.pbest      = {
@@ -19,6 +20,14 @@ class Particle {
     }
 
     evaluate() {
+        for (let d = 0; d < dimensions; d++) {
+            if (this.position[d] < this.boundary[0] || this.position[d] > this.boundary[1]) {
+                this.getNextPosition();
+
+                return gbest;
+            }
+        }
+
         let result = this.heuristic(this.position, dimensions);
 
         if (result < this.pbest.solution) {
@@ -59,32 +68,46 @@ class Particle {
             nextPosition.push(component);
         }
 
-        nextPosition = this.bindVector(nextPosition);
+        this.position = nextPosition;
+    }
+
+    getNextPositionClerc() {
+        // v(t+1) = X.[ v(t) + c1.r1.(pbest - x(t)) + c2.r2.(gbest - x(t)) ]
+        // Ω = c1 + c2
+        // X = 2 / |2 - Ω - sqrt(Ω^2-4∂)|
+        // x(t+1) = x(t) + v(t+1)
+
+        let nextPosition    = [];
+        let accelp          = config.pso.accelP;
+        let accelg          = config.pso.accelG;
+
+        let ohm  = accelp + accelg;
+        let chi = 2 / Math.abs(2 - ohm - Math.sqrt(Math.pow(ohm, 2) - 4 * ohm));
+
+        for (let i = 0; i < config.dimensions; i++) {
+            let rp = Math.random();
+            let rg = Math.random();
+
+            let inertialComponent     = this.velocity[i];
+            let cognitiveComponent    = accelp * rp * (this.pbest.position[i] - this.position[i]);
+            let socialComponent       = accelg * rg * (gbest.position[i] - this.position[i]);
+
+            let nextVelocity    = inertialComponent + cognitiveComponent + socialComponent;
+            nextVelocity        = chi * nextVelocity;
+
+            let component = this.position[i] + nextVelocity;
+
+            nextPosition.push(component);
+        }
 
         this.position = nextPosition;
     }
 
-    bindVector(vector) {
-        let width   = config.canvas.width - 10;
-        let height  = config.canvas.height - 10;
-
-        if (vector[0] > width) {
-            vector[0] = width;
-        }
-
-        if (vector[0] < 0 ) {
-            vector[0] = 0;
-        }
-
-        if (vector[1] > height) {
-            vector[1] = height;
-        }
-
-        if (vector[1] < 0 ) {
-            vector[1] = 0;
-        }
-
-        return vector
+    static clear() {
+        gbest = {
+            solution: NaN,
+            position: [NaN, NaN]
+        };
     }
 }
 
