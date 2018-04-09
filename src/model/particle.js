@@ -22,7 +22,7 @@ class Particle {
     evaluate() {
         for (let d = 0; d < dimensions; d++) {
             if (this.position[d] < this.boundary[0] || this.position[d] > this.boundary[1]) {
-                this.getNextPosition();
+                this.getNextPosition_bratton();
 
                 return gbest;
             }
@@ -39,12 +39,12 @@ class Particle {
             gbest = this.pbest;
         }
 
-        this.getNextPosition();
+        this.getNextPosition_bratton();
 
         return gbest;
     }
 
-    getNextPosition() {
+    getNextPosition_bratton() {
         // v(t+1) = w.v(t) + c1.r1.(pbest - x(t)) + c2.r2.(gbest - x(t))
         // x(t+1) = x(t) + v(t+1)
 
@@ -62,6 +62,7 @@ class Particle {
             let socialComponent       = accelg * rg * (gbest.position[i] - this.position[i]);
 
             let nextVelocity = inertialComponent + cognitiveComponent + socialComponent;
+            this.velocity[i] = nextVelocity;
 
             let component = this.position[i] + nextVelocity;
 
@@ -71,17 +72,17 @@ class Particle {
         this.position = nextPosition;
     }
 
-    getNextPositionClerc() {
+    getNextPosition_clerc() {
         // v(t+1) = X.[ v(t) + c1.r1.(pbest - x(t)) + c2.r2.(gbest - x(t)) ]
         // Ω = c1 + c2
-        // X = 2 / |2 - Ω - sqrt(Ω^2-4∂)|
+        // X = 2 / |2 - Ω - sqrt(Ω^2-4Ω)|
         // x(t+1) = x(t) + v(t+1)
 
         let nextPosition    = [];
         let accelp          = config.pso.accelP;
         let accelg          = config.pso.accelG;
 
-        let ohm  = accelp + accelg;
+        let ohm = accelp + accelg;
         let chi = 2 / Math.abs(2 - ohm - Math.sqrt(Math.pow(ohm, 2) - 4 * ohm));
 
         for (let i = 0; i < config.dimensions; i++) {
@@ -94,6 +95,7 @@ class Particle {
 
             let nextVelocity    = inertialComponent + cognitiveComponent + socialComponent;
             nextVelocity        = chi * nextVelocity;
+            this.velocity[i]    = nextVelocity;
 
             let component = this.position[i] + nextVelocity;
 

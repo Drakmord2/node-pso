@@ -4,7 +4,7 @@ const configs = {
     pso: {
         accelP: 2.05,
         accelG: 2.05,
-        inertia: 0.02,
+        inertia: 0.4,
         boundaries: {
             sphere: [-100, 100],
             rosenbrock: [-30, 30],
